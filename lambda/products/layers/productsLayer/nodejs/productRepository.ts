@@ -1,7 +1,7 @@
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 import { v4 as uuid } from "uuid";
 export interface Product {
-    id: ScrollSetting;
+    id: string;
     productName: string;
     code: string;
     price: number;
@@ -37,6 +37,15 @@ export class ProductRepository {
         } else {
             throw new Error('Product not found')
         }
+    }
+
+    async create(product: Product): Promise<Product> {
+        product.id = uuid()
+        await this.ddbClient.put({
+            TableName: this.productsDdb,
+            Item: product
+        }).promise()
+        return product
     }
 
 }
