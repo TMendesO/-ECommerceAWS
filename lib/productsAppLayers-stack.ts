@@ -17,7 +17,7 @@ export class ProductsAppLayersStack extends cdk.Stack {
             removalPolicy: cdk.RemovalPolicy.RETAIN
 
         })
-        new ssm.StringParameter(this, "ProductsLayerVersionArn", {
+        new ssm.StringParameter(this, "ProducstLayerVersionArn", {
             parameterName: "ProducstLayerVersionArn",
             stringValue: this.productsLayers.layerVersionArn
         })

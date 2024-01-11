@@ -1,5 +1,6 @@
 {
   "app": "npx ts-node --prefer-ts-exts bin/e_commerce_aws.ts",
+  "stagingBucket": "cdk-hnb659fds-assets-890170421202-us-east-1-1",
   "watch": {
     "include": [
       "**"
