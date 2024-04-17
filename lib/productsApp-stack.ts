@@ -30,19 +30,19 @@ export class ProductsAppStack extends cdk.Stack {
       })
 
       //Product Layer
-      const productsLayerArn = ssm.StringParameter.valueForStringParameter(this, "ProducstLayerVersionArn")
-      const productsLayer = lambda.LayerVersion.fromLayerVersionArn(this, "ProducstLayerVersionArn", productsLayerArn)
+      const productsLayerArn = ssm.StringParameter.valueForStringParameter(this, "ProductsLayerVersionArn")
+      const productsLayer = lambda.LayerVersion.fromLayerVersionArn(this, "ProductsLayerVersionArn", productsLayerArn)
 
       //Product Event Layer
       const productEventsLayerArn = ssm.StringParameter.valueForStringParameter(this, "ProductEventsLayerVersionArn")
       const productEventsLayer = lambda.LayerVersion.fromLayerVersionArn(this, "ProductEventsLayerVersionArn", productEventsLayerArn)
 
       const productEventsHandler = new lambdaNodeJS.NodejsFunction(this,
-         "ProductEventsFunction", {
-         functionName: "ProductEventsFunction",
-         entry: "lambda/products/ProductEventsFunction.ts",
+         "productEventsFunction", {
+         functionName: "productEventsFunction",
+         entry: "lambda/products/productsEventsFunction.ts",
          handler: "handler",
-         runtime: lambda.Runtime.NODEJS_20_X,
+         runtime: lambda.Runtime.NODEJS_18_X,
          memorySize: 512,
          timeout: cdk.Duration.seconds(5),
          bundling: {
@@ -64,7 +64,7 @@ export class ProductsAppStack extends cdk.Stack {
          functionName: "ProductsFetchFunction",
          entry: "lambda/products/productsFetchFunction.ts",
          handler: "handler",
-         runtime: lambda.Runtime.NODEJS_20_X,
+         runtime: lambda.Runtime.NODEJS_18_X,
          memorySize: 512,
          timeout: cdk.Duration.seconds(5),
          bundling: {
@@ -85,9 +85,10 @@ export class ProductsAppStack extends cdk.Stack {
       this.productsAdminHandler = new lambdaNodeJS.NodejsFunction(this,
          "ProductsAdminFunction", {
          functionName: "ProductsAdminFunction",
-         entry: "lambda/products/productsAdminFunction.ts",
+         entry: "lambda/products/productsEventsFunction.ts",
+         /* entry: "lambda/products/productsAdminFunction.ts", */
          handler: "handler",
-         runtime: lambda.Runtime.NODEJS_20_X,
+         runtime: lambda.Runtime.NODEJS_18_X,
          memorySize: 512,
          timeout: cdk.Duration.seconds(5),
          bundling: {
