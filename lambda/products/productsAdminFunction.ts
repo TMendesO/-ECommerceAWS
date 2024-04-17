@@ -40,7 +40,7 @@ export async function handler(event: APIGatewayProxyEvent, context: Context): Pr
             try {
                 const productUpdated = await productRepository.updateProduct(productId, product)
 
-                const response = await sendProductEvent(productUpdated, ProductEventType.UPDATE, "thiago.mendes90@yahoo.com.br", lambdaRequestId)
+                const response = await sendProductEvent(productUpdated, ProductEventType.UPDATE, "thiago_skahc@hotmail.com", lambdaRequestId)
                 console.log(response)
 
                 return {
@@ -61,7 +61,7 @@ export async function handler(event: APIGatewayProxyEvent, context: Context): Pr
             try {
                 const product = await productRepository.deleteProduct(productId)
 
-                const response = await sendProductEvent(product, ProductEventType.DELETED, "thiago.mendes90@yahoo.com.br", lambdaRequestId)
+                const response = await sendProductEvent(product, ProductEventType.DELETED, "thiago.mendes777@hotmail.com", lambdaRequestId)
                 console.log(response)
 
                 return {
