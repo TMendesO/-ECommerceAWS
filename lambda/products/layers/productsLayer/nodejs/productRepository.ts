@@ -1,22 +1,22 @@
-import { DocumentClient } from "aws-sdk/clients/dynamodb";
-import { v4 as uuid } from "uuid";
+import { DocumentClient } from "aws-sdk/clients/dynamodb"
+import { v4 as uuid } from "uuid"
+
 export interface Product {
     id: string;
     productName: string;
-    code: string;
+    productCode: string;
     price: number;
     model: string;
     productUrl: string;
 }
+
 export class ProductRepository {
     private ddbClient: DocumentClient
     private productsDdb: string
 
-
     constructor(ddbClient: DocumentClient, productsDdb: string) {
         this.ddbClient = ddbClient
         this.productsDdb = productsDdb
-
     }
 
     async getAllProducts(): Promise<Product[]> {
@@ -40,6 +40,25 @@ export class ProductRepository {
         }
     }
 
+    async getProductsByIds(productIds: string[]): Promise<Product[]> {
+        const keys: { id: string; }[] = []
+
+        productIds.forEach((productId) => {
+            keys.push({
+                id: productId
+            })
+        })
+
+        const data = await this.ddbClient.batchGet({
+            RequestItems: {
+                [this.productsDdb]: {
+                    Keys: keys
+                },
+            }
+        }).promise()
+        return data.Responses![this.productsDdb] as Product[]
+    }
+
     async create(product: Product): Promise<Product> {
         product.id = uuid()
         await this.ddbClient.put({
@@ -48,6 +67,7 @@ export class ProductRepository {
         }).promise()
         return product
     }
+
     async deleteProduct(productId: string): Promise<Product> {
         const data = await this.ddbClient.delete({
             TableName: this.productsDdb,
@@ -62,6 +82,7 @@ export class ProductRepository {
             throw new Error('Product not found')
         }
     }
+
     async updateProduct(productId: string, product: Product): Promise<Product> {
         const data = await this.ddbClient.update({
             TableName: this.productsDdb,
@@ -70,18 +91,16 @@ export class ProductRepository {
             },
             ConditionExpression: 'attribute_exists(id)',
             ReturnValues: "UPDATED_NEW",
-            UpdateExpression: "set productName = :n,  code = :c, price = :p, model = :m, productUrl = :u ",
+            UpdateExpression: "set productName = :n, code = :c, price = :p, model = :m, productUrl = :u",
             ExpressionAttributeValues: {
                 ":n": product.productName,
-                ":c": product.code,
+                ":c": product.productCode,
                 ":p": product.price,
                 ":m": product.model,
                 ":u": product.productUrl
-
             }
         }).promise()
         data.Attributes!.id = productId
         return data.Attributes as Product
     }
-
 }

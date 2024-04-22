@@ -1,6 +1,6 @@
 export enum ProductEventType {
     CREATED = "PRODUCT_CREATED",
-    UPDATE = "PRODUCT_UPDATED",
+    UPDATED = "PRODUCT_UPDATED",
     DELETED = "PRODUCT_DELETED"
 }
 

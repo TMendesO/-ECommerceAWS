@@ -5,10 +5,13 @@ import * as dynamodb from "aws-cdk-lib/aws-dynamodb"
 export class EventsDdbStack extends cdk.Stack {
     readonly table: dynamodb.Table
 
-    constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+    constructor(scope: Construct,
+        id: string,
+        props?: cdk.StackProps) {
         super(scope, id, props)
 
-        this.table = new dynamodb.Table(this, "EventsDdb", {
+        this.table = new dynamodb.Table(this,
+            "EventsDdb", {
             tableName: "events",
             removalPolicy: cdk.RemovalPolicy.DESTROY,
             partitionKey: {
@@ -25,5 +28,4 @@ export class EventsDdbStack extends cdk.Stack {
             writeCapacity: 1
         })
     }
-
 }

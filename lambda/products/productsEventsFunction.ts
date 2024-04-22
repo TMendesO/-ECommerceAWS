@@ -1,9 +1,9 @@
 import { Context, Callback } from "aws-lambda";
 import { ProductEvent } from "./layers/productEventsLayer/nodejs/productEvent";
 import { DynamoDB } from "aws-sdk";
-import * as AWSRay from "aws-xray-sdk"
+import * as AWSXRay from "aws-xray-sdk"
 
-AWSRay.captureAWS(require("aws-sdk"))
+AWSXRay.captureAWS(require("aws-sdk"))
 
 const eventsDdb = process.env.EVENTS_DDB!
 const ddbClient = new DynamoDB.DocumentClient()
@@ -23,8 +23,27 @@ export async function handler(event: ProductEvent, context: Context, callback: C
 }
 
 function createEvent(event: ProductEvent) {
+    if (!event.productCode || !event.eventType) {
+        console.error('productCode e eventType são necessários.');
+        return;
+    }
+    console.log("productCode:", event.productCode);
+    console.log("eventType:", event.eventType);
+    console.log('OOLHAA Item a ser inserido:', JSON.stringify({
+        pk: `#product_${event.productCode}`,
+        sk: `${event.eventType}#${Date.now()}`,
+        email: event.email,
+        createAt: Date.now(),
+        requestId: event.requestId,
+        eventType: event.eventType,
+        info: {
+            productId: event.productId,
+            price: event.productPrice
+        },
+        ttl: ~~(Date.now() / 1000) + (5 * 60)
+    }));
     const timestamp = Date.now()
-    const ttl = ~~(timestamp / 1000) + 5 * 60//5 minutos a frente do do tempo
+    const ttl = ~~(timestamp / 1000) + (5 * 60)//5 minutos à frente
 
     return ddbClient.put({
         TableName: eventsDdb,
@@ -32,7 +51,7 @@ function createEvent(event: ProductEvent) {
             pk: `#product_${event.productCode}`,
             sk: `${event.eventType}#${timestamp}`,
             email: event.email,
-            createAt: timestamp,
+            createdAt: timestamp,
             requestId: event.requestId,
             eventType: event.eventType,
             info: {
