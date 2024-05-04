@@ -23,7 +23,7 @@
     "typescript": "~5.0.4"
   },
   "dependencies": {
-    "aws-cdk-lib": "^2.79.1",
+    "aws-cdk-lib": "^2.140.0",
     "aws-lib": "^0.3.0",
     "aws-xray-sdk": "^3.5.3",
     "constructs": "^10.0.0",
