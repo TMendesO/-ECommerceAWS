@@ -1,9 +1,10 @@
-import * as lambda from 'aws-cdk-lib'
-import * as lambdaNodeJS from 'aws-cdk-lib/aws-lambda-nodejs'
-import * as cdk from 'aws-cdk-lib'
-import * as dynamodb from 'aws-cdk-lib/aws-dynamodb'
-import * as ssm from 'aws-cdk-lib/aws-ssm'
-import { Construct } from 'constructs'
+import * as lambda from "aws-cdk-lib/aws-lambda"
+import * as lambdaNodeJS from "aws-cdk-lib/aws-lambda-nodejs"
+import * as cdk from "aws-cdk-lib"
+import * as dynamodb from "aws-cdk-lib/aws-dynamodb"
+import * as ssm from "aws-cdk-lib/aws-ssm"
+import { Construct } from "constructs"
+
 
 interface OrdersAppStackProps extends cdk.StackProps {
     productsDdb: dynamodb.Table
@@ -28,5 +29,17 @@ export class OrdesAppStack extends cdk.Stack {
             writeCapacity: 1
 
         })
+
+        //Orders Layer
+        const ordersLayerArn = ssm.StringParameter.valueForStringParameter(this, "OrdersLayerVersionArn")
+        const oprdersLayer = lambda.LayerVersion.fromLayerVersionArn(this, "OrdersLayerVersionArn", ordersLayerArn)
+
+
+
+        //Product Layer
+        const productsLayerArn = ssm.StringParameter.valueForStringParameter(this, "ProductsLayerVersionArn")
+        const productsLayer = lambda.LayerVersion.fromLayerVersionArn(this, "ProductsLayerVersionArn", productsLayerArn)
+
+
     }
 }
