@@ -6,8 +6,9 @@ import { Construct } from "constructs"
 
 
 interface ECommerceApiStackProps extends cdk.StackProps {
-  productsFetchHandler: lambdaNodeJS.NodejsFunction
-  productsAdminHandler: lambdaNodeJS.NodejsFunction
+  productsFetchHandler: lambdaNodeJS.NodejsFunction;
+  productsAdminHandler: lambdaNodeJS.NodejsFunction;
+  ordersHandler: lambdaNodeJS.NodejsFunction;
 }
 
 export class ECommerceApiStack extends cdk.Stack {
@@ -34,6 +35,30 @@ export class ECommerceApiStack extends cdk.Stack {
       }
     })
 
+    this.createProductsService(props, api)
+    this.createOrdersService(props, api)
+
+  }
+
+  private createOrdersService(props: ECommerceApiStackProps, api: apigateway.RestApi) {
+    const ordersIntegration = new apigateway.LambdaIntegration(props.ordersHandler)
+
+    //resource - /orders
+    const orderResource = api.root.addResource('orders')
+
+    //GET /orders
+    //GET /orders?email=thiago@tm.com.br
+    //GET /orders?email=thiago@tm.com.br&orderId=123
+    orderResource.addMethod("GET", ordersIntegration)
+
+    //DELETE /orders?email=thiago@tm.com.br&orderId=123
+    orderResource.addMethod("DELETE", ordersIntegration)
+
+    //POST /orders
+    orderResource.addMethod("POST", ordersIntegration)
+  }
+
+  private createProductsService(props: ECommerceApiStackProps, api: apigateway.RestApi) {
     const productsFetchIntegration = new apigateway.LambdaIntegration(props.productsFetchHandler)
 
     // outra rota saindo da raiz "/products"
@@ -54,7 +79,6 @@ export class ECommerceApiStack extends cdk.Stack {
 
     //DELETE /products/{id}
     productIdResource.addMethod("DELETE", productsAdminIntegration)
-
   }
 }
 
