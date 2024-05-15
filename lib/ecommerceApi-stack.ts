@@ -51,8 +51,20 @@ export class ECommerceApiStack extends cdk.Stack {
     //GET /orders?email=thiago@tm.com.br&orderId=123
     orderResource.addMethod("GET", ordersIntegration)
 
+    const orderDeletionValidator = new apigateway.RequestValidator(this, "OrderDeletionValidator", {
+      restApi: api,
+      requestValidatorName: "OrderDeletionValidator",
+      validateRequestParameters: true
+    })
     //DELETE /orders?email=thiago@tm.com.br&orderId=123
-    orderResource.addMethod("DELETE", ordersIntegration)
+    orderResource.addMethod("DELETE", ordersIntegration, {
+      requestParameters: {
+        'method.request.querystring.email': true,
+        'method.request.querystring.orderId': true,
+
+      },
+      requestValidator: orderDeletionValidator
+    })
 
     //POST /orders
     orderResource.addMethod("POST", ordersIntegration)
