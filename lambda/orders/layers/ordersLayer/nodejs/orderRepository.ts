@@ -1,3 +1,6 @@
+import { DocumentClient } from "aws-sdk/clients/dynamodb"
+import { v4 as uuid } from "uuid"
+
 export interface OrderProduct {
     code: string,
     price: number,
@@ -18,4 +21,14 @@ export interface Order {
     },
     products: OrderProduct[]
 
+}
+
+export class ordersRepository {
+    private ddbClient: DocumentClient
+    private ordersDdb: string
+
+    constructor(ddbClient: DocumentClient, orderDdb: string) {
+        this.ddbClient = ddbClient
+        this.ordersDdb = orderDdb
+    }
 }
