@@ -60,7 +60,7 @@ export class OrdesAppStack extends cdk.Stack {
                 PRODUCTS_DDB: props.productsDdb.tableName,
                 ORDERS_DDB: ordersDbd.tableName
             },
-            layers: [ordersLayer, productsLayer, ordersApiLayer], //ordersLayer ainda tem que ser criada
+            layers: [ordersLayer, productsLayer, ordersApiLayer],
             tracing: lambda.Tracing.ACTIVE,
             insightsVersion: lambda.LambdaInsightsVersion.VERSION_1_0_119_0
         })
